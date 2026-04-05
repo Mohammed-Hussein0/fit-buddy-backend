@@ -2,15 +2,41 @@ from pydantic import BaseModel, Field
 from typing import Optional
 from datetime import date, datetime
 from uuid import UUID
-from app.api.v1.users.enums import *
+import enum
+
+
+class GenderEnum(str, enum.Enum):
+    male = "male"
+    female = "female"
+
+
+class ThemeEnum(str, enum.Enum):
+    light = "light"
+    dark = "dark"
+
+
+class WeightUnitEnum(str, enum.Enum):
+    kg = "kg"
+    lbs = "lbs"
+
+
+class HeightUnitEnum(str, enum.Enum):
+    cm = "cm"
+    feet = "feet"
+
+
+class SubscriptionPlanEnum(str, enum.Enum):
+    free = "free"
+    paid = "paid"
+
 
 class UserProfileUpdate(BaseModel):
     username: Optional[str] = None
     birth_date: Optional[date] = None
     gender: Optional[GenderEnum] = None
-    height: condecimal(gt=0, max_digits=3, decimal_places=1)
-    weight: condecimal(gt=0, max_digits=5, decimal_places=1)
-    goal_weight: condecimal(gt=0, max_digits=5, decimal_places=1)
+    height: Optional[int] = None
+    weight: Optional[int] = None
+    goal_weight: Optional[int] = None
     preferred_theme: Optional[ThemeEnum] = None
     preferred_weight_unit: Optional[WeightUnitEnum] = None
     preferred_height_unit: Optional[HeightUnitEnum] = None
@@ -27,15 +53,15 @@ class UserProfileResponse(BaseModel):
     username: str
     birth_date: date
     gender: GenderEnum
-    height: condecimal(gt=0, max_digits=3, decimal_places=1)
-    weight: condecimal(gt=0, max_digits=5, decimal_places=1)
-    goal_weight: condecimal(gt=0, max_digits=5, decimal_places=1)
+    height: int
+    weight: int
+    goal_weight: int
     preferred_theme: ThemeEnum
     preferred_weight_unit: WeightUnitEnum
     preferred_height_unit: HeightUnitEnum
     subscription_plan: SubscriptionPlanEnum
-    bmi: decimal.Decimal
-    bmr: decimal.Decimal
+    bmi: float
+    bmr: float
     age: int
     created_at: datetime
     modified_at: datetime
@@ -49,9 +75,9 @@ class UserProfileCreate(BaseModel):
     username: str = Field(..., max_length=20)
     birth_date: date
     gender: GenderEnum
-    height: condecimal(gt=0, max_digits=3, decimal_places=1)
-    weight: condecimal(gt=0, max_digits=5, decimal_places=1)
-    goal_weight: condecimal(gt=0, max_digits=5, decimal_places=1)
+    height: int
+    weight: int
+    goal_weight: int
     preferred_theme: ThemeEnum
     preferred_weight_unit: WeightUnitEnum
     preferred_height_unit: HeightUnitEnum

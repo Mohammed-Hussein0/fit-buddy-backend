@@ -1,5 +1,6 @@
 import requests
 from fastapi import Header, HTTPException
+from app.api.v1.users.models import Users
 import os
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -17,3 +18,10 @@ def get_current_user_id(authorization: str = Header(...)):
         raise HTTPException(status_code=401, detail="Invalid token")
 
     return resp.json()["id"]
+
+def user_exists():
+    profile = db.execute(
+            select(UserProfile).where(UserProfile.auth_id == user_id)
+        ).scalar_one_or_none()
+
+    return profile

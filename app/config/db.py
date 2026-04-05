@@ -1,9 +1,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import sessionmaker, Session, DeclarativeBase
 import os
 from dotenv import load_dotenv
 from fastapi import Depends
+
+class Base(DeclarativeBase):
+    pass
 
 load_dotenv()
 
