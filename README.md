@@ -101,7 +101,7 @@ SECRET_KEY=secret-key
 | -------- | ----------------- |
 | Users    | `/api/v1/users`   |
 | Weights  | `/api/v1/weights` |
-| Workouts | '/api/v1/workouts' |
+| Workouts | `/api/v1/workouts` |
 
 Full interactive documentation available at `/docs` when running locally.
 
