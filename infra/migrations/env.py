@@ -12,11 +12,12 @@ from dotenv import load_dotenv
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 ###################################################
-from app.api.v1.users.models import Users
-from app.api.v1.weights.models import Weights
+#from app.models. import Users
+#from app.api.v1.weights.models import Weights
 ###################################################
 
-from app.config.db import Base
+import app.models
+from app.db.connection import Base
 
 load_dotenv()
 
