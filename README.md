@@ -1,6 +1,6 @@
 # Fit-Buddy Backend
 
-A privacy-first, AI-driven fitness assistant backend built with FastAPI. Delivers personalized workout and nutrition insights while keeping user data secure.
+A privacy-first, AI-driven fitness assistant and workout tracking backend built with FastAPI. Delivers personalized workout and nutrition insights while keeping user data secure.
 
 ## Tech Stack
 
@@ -27,27 +27,17 @@ A privacy-first, AI-driven fitness assistant backend built with FastAPI. Deliver
 ```
 fit-buddy-backend/
 ├── app/
-│   ├── api/
-│   │   ├── api.py               # Root API router
-│   │   └── v1/
-│   │       ├── api.py           # v1 router
-│   │       ├── users/           # User routes, models, schemas, enums
-│   │       └── weights/         # Weight tracking routes, models, schemas
-│   ├── config/
-│   │   ├── db.py                # Database connection setup
-│   │   └── settings.py          # Environment settings
-│   ├── middlewares/
-│   │   ├── auth.py              # JWT authentication middleware
-│   │   └── logging.py           # Request logging middleware
-│   └── utils/
-│       └── helpers.py
-├── infra/
-│   ├── alembic.ini
-│   └── migrations/              # Alembic migration versions
-├── tests/
-├── main.py
-├── requirements.txt
-└── .env.example
+│   ├── api/
+│   │   ├── routers/           # API Endpoints, empty of logic
+│   │   ├── schemas/           # Contract definitions between client and endpoints
+│   │   └── services/          # Business logic lives here
+│   ├── db/                    # Database related logic
+│   └── models/                # Database models written in SQLAlchemy
+├── infra/                     # All related infrastructure configs live here
+│   └── migrations/            # The folder where alembic lives in
+│       └── versions/          # Continous version of alembic migrations
+└── tests/                     # Here we run the tests
+
 ```
 
 ## Getting Started
@@ -74,12 +64,20 @@ pip install -r requirements.txt
 # Copy environment variables
 cp .env.example .env
 # Fill in your values in .env
+'''
 
-# Run database migrations
-alembic -c infra/alembic.ini upgrade head
+### Routine
+
+'''bash
+#Activate virtual environment
+source venv/bin/activate        # Windows: venv\Scripts\activate
 
 # Start the server
-uvicorn main:app --reload
+uvicorn main:app --reload       # Without --reload to stop automatic reloads of the server
+
+# Run database migrations
+alembic revision --autogenerate -m {description} # To revise the migration
+alembic -c infra/alembic.ini upgrade head        # To force the migration
 ```
 
 API available at: `http://localhost:8000`  
@@ -91,7 +89,6 @@ Create a `.env` file based on `.env.example`:
 
 ```env
 DATABASE_URL=database-url
-REDIS_URL=redis-url
 SECRET_KEY=secret-key
 ```
 
@@ -99,9 +96,9 @@ SECRET_KEY=secret-key
 
 | Resource | Base Path         |
 | -------- | ----------------- |
-| Users    | `/api/v1/users`   |
-| Weights  | `/api/v1/weights` |
-| Workouts | `/api/v1/workouts` |
+| Users    | `/api/users`   |
+| Weights  | `/api/weights` |
+| Workouts | `/api/workouts` |
 
 Full interactive documentation available at `/docs` when running locally.
 

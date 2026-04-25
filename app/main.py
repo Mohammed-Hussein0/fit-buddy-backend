@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from app.api.api import api_router
+from app.api.main_router import router
 
 
 app = FastAPI(title="Fitness App API")
 
 
-app.include_router(api_router)
+app.include_router(router)

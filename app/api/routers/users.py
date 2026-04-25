@@ -1,27 +1,28 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from app.config.db import get_db
-from app.api.v1.users.models import UserProfile
-from app.api.v1.users.schemas import UserProfileUpdate, UserProfileResponse, UserProfileCreate
-from app.middlewares.auth import get_current_user_id
-from app.utils.helpers import user_exists
+from app.db.connection import get_db
+from app.models.users import Users
+from app.api.schemas.users import UserProfileUpdate, UserProfileResponse, UserProfileCreate
+from app.api.services.auth import get_current_user_id, user_exists
 
-router = APIRouter()
+router = APIRouter(prefix="/users")
 
-@router.post("/users/profile", response_model=UserProfileResponse)
-def create_my_profile(
+@router.post("/profile", response_model=UserProfileResponse)
+def create_profile(
     payload: UserProfileCreate,
     db: Session = Depends(get_db),
-    user_id: str = Depends(get_current_user_id)
+    user_id: str = Depends(get_current_user_id),
 ):
     
-    profile = user_exists()
+    profile = user_exists(db, user_id)
 
-    if not profile:
-        raise HTTPException(status_code=404, detail="Profile not found")
+    if profile:
+        raise HTTPException(
+            status_code=400, detail="Profile already exists for this user"
+        )
 
-    new_profile = UserProfile(
+    new_profile = Users(
         auth_id=user_id,
         **payload.model_dump()
     )
@@ -34,13 +35,13 @@ def create_my_profile(
 
 ###########################################################################################################
 
-@router.patch("/users/profile", response_model=UserProfileResponse)
-def update_my_profile(
+@router.patch("/profile", response_model=UserProfileResponse)
+def update_profile(
     payload: UserProfileUpdate,
     db: Session = Depends(get_db),
     user_id: str = Depends(get_current_user_id),
 ):
-    profile = user_exists()
+    profile = user_exists(db, user_id)
 
     if not profile:
         raise HTTPException(status_code=404, detail="Profile not found")
@@ -57,17 +58,14 @@ def update_my_profile(
 
 ###########################################################################################################
 
-@router.get("/users/profile", response_model=UserProfileResponse)
-def update_my_profile(
+@router.get("/profile", response_model=UserProfileResponse)
+def get_profile(
     db: Session = Depends(get_db),
-    user_id: str = Depends(get_current_user_id)
+    user_id: str = Depends(get_current_user_id),
 ):
-    profile = user_exists()
+    profile = user_exists(db, user_id)
 
     if not profile:
         raise HTTPException(status_code=404, detail="Profile not found")
-
-    db.commit()
-    db.refresh(profile)
 
     return profile

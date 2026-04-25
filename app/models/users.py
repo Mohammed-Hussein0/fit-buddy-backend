@@ -1,14 +1,12 @@
 from typing import Optional
 import datetime
 import decimal
-from app.api.v1.users.enums import *
+from .enums import *
 import uuid
-
 from sqlalchemy import BigInteger, Boolean, CheckConstraint, Column, Computed, Date, DateTime, Double, Enum, ForeignKeyConstraint, Identity, Index, Numeric, PrimaryKeyConstraint, SmallInteger, String, Table, Text, UniqueConstraint, Uuid, text
 from sqlalchemy.dialects.postgresql import JSONB, OID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-
-from app.config.db import Base
+from app.db.connection import Base
 
 
 class Users(Base):
@@ -26,7 +24,7 @@ class Users(Base):
 
     birth_date: Mapped[datetime.date] = mapped_column(Date, nullable=False)
 
-    gender: Mapped[GenderEnum] = mapped_column(Enum(GenderEnum, name = 'gender_enum'), nullable=False)
+    gender: Mapped[GenderEnum] = mapped_column(Enum(GenderEnum, name = 'gender_enum', values_callable=lambda e: [i.value for i in e]), nullable=False)
 
     height: Mapped[decimal.Decimal] = mapped_column(Numeric(4, 1), nullable=False)
 
@@ -34,13 +32,13 @@ class Users(Base):
 
     goal_weight: Mapped[decimal.Decimal] = mapped_column(Numeric(4, 1), nullable=False)
 
-    preferred_theme: Mapped[ThemeEnum] = mapped_column(Enum(ThemeEnum, name = 'theme_enum'), nullable=False)
+    preferred_theme: Mapped[ThemeEnum] = mapped_column(Enum(ThemeEnum, name = 'theme_enum', values_callable=lambda e: [i.value for i in e]), nullable=False)
 
-    preferred_weight_unit: Mapped[WeightUnitEnum] = mapped_column(Enum(WeightUnitEnum, name='weight_unit_enum'), nullable=False)
+    preferred_weight_unit: Mapped[WeightUnitEnum] = mapped_column(Enum(WeightUnitEnum, name='weight_unit_enum', values_callable=lambda e: [i.value for i in e]), nullable=False)
 
-    preferred_height_unit: Mapped[HeightUnitEnum] = mapped_column(Enum(HeightUnitEnum, name='height_unit_enum'), nullable=False)
+    preferred_height_unit: Mapped[HeightUnitEnum] = mapped_column(Enum(HeightUnitEnum, name='height_unit_enum', values_callable=lambda e: [i.value for i in e]), nullable=False)
 
-    subscription_plan: Mapped[SubscriptionPlanEnum] = mapped_column(Enum(SubscriptionPlanEnum, name='subscription_plan_enum'), nullable=False)
+    subscription_plan: Mapped[SubscriptionPlanEnum] = mapped_column(Enum(SubscriptionPlanEnum, name='subscription_plan_enum', values_callable=lambda e: [i.value for i in e]), nullable=False)
 
     created_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=text('CURRENT_TIMESTAMP'))
 
@@ -54,6 +52,6 @@ class Users(Base):
     
     auth_id: Mapped[uuid.UUID] = mapped_column(Uuid, unique=True, nullable=False)
 
-    weight_logs: Mapped[list["Weights"]] = relationship(
-        back_populates="user"
-    )    
+    plans: Mapped[list["WorkoutPlan"]] = relationship("WorkoutPlan", back_populates="owner")
+    sessions: Mapped[list["WorkoutSession"]] = relationship("WorkoutSession", back_populates="user")
+    weight_logs: Mapped[list["WeightLog"]] = relationship("WeightLog", back_populates="user")
