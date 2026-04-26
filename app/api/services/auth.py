@@ -32,7 +32,7 @@ def get_current_user_id(
     except JWTError as e:
         raise HTTPException(status_code=401, detail=str(e))
         
-def user_exists(db: Session, user_id: str):
+def get_profile(db: Session, user_id: str):
     return db.execute(
         select(Users).where(Users.auth_id == user_id)
     ).scalar_one_or_none()
