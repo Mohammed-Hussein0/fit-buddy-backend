@@ -8,6 +8,8 @@ from app.api.services.auth import get_current_user_id, get_profile
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
+# -----------------------------------------------------------------------------
+
 @router.post("/profile", response_model=UserProfileResponse, status_code=201)
 def create_profile(
     payload: UserProfileCreate,
@@ -33,7 +35,7 @@ def create_profile(
 
     return new_profile
 
-###########################################################################################################
+# -----------------------------------------------------------------------------
 
 @router.patch("/profile", response_model=UserProfileResponse, status_code=200)
 def update_profile(
@@ -56,7 +58,7 @@ def update_profile(
 
     return profile
 
-###########################################################################################################
+# -----------------------------------------------------------------------------
 
 @router.get("/profile", response_model=UserProfileResponse, status_code=200)
 def get_profile(
