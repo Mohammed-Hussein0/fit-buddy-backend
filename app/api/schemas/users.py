@@ -1,60 +1,69 @@
-from decimal import Decimal
+from __future__ import annotations
+
 from datetime import date, datetime
-from typing import Annotated, Optional
+from decimal import Decimal
+from typing import Optional
 
-from pydantic import BaseModel, ConfigDict, Field
-from app.models.enums import *
+from pydantic import BaseModel
 
-HeightType    = Annotated[Decimal, Field(gt=0, max_digits=4, decimal_places=1)]
-WeightType    = Annotated[Decimal, Field(gt=0, max_digits=5, decimal_places=2)]
-UsernameType  = Annotated[str,     Field(min_length=3, max_length=20)]
+from app.models.enums import (
+    GenderEnum,
+    HeightUnitEnum,
+    SubscriptionPlanEnum,
+    ThemeEnum,
+    WeightUnitEnum,
+)
+from .common import HeightType, UsernameType, WeightType
+
 
 class UserProfileCreate(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    username:              UsernameType
+    birth_date:            date
+    gender:                GenderEnum
+    height:                HeightType
+    weight:                WeightType
+    goal_weight:           WeightType
+    preferred_theme:       ThemeEnum
+    preferred_weight_unit: WeightUnitEnum
+    preferred_height_unit: HeightUnitEnum
+    subscription_plan:     SubscriptionPlanEnum
 
-    username:               UsernameType
-    birth_date:             date
-    gender:                 GenderEnum
-    height:                 HeightType
-    weight:                 WeightType
-    goal_weight:            WeightType
-    preferred_theme:        ThemeEnum
-    preferred_weight_unit:  WeightUnitEnum
-    preferred_height_unit:  HeightUnitEnum
-    subscription_plan:      SubscriptionPlanEnum
+    model_config = {"from_attributes": True}
 
 
 class UserProfileUpdate(BaseModel):
-    model_config = ConfigDict(from_attributes=True, extra="forbid")
+    # All fields optional for partial PATCH. extra="forbid" rejects unknown fields.
+    username:              Optional[UsernameType]         = None
+    birth_date:            Optional[date]                 = None
+    gender:                Optional[GenderEnum]           = None
+    height:                Optional[HeightType]           = None
+    weight:                Optional[WeightType]           = None
+    goal_weight:           Optional[WeightType]           = None
+    preferred_theme:       Optional[ThemeEnum]            = None
+    preferred_weight_unit: Optional[WeightUnitEnum]       = None
+    preferred_height_unit: Optional[HeightUnitEnum]       = None
+    subscription_plan:     Optional[SubscriptionPlanEnum] = None
 
-    username:               Optional[UsernameType]          = None
-    birth_date:             Optional[date]                  = None
-    gender:                 Optional[GenderEnum]            = None
-    height:                 Optional[HeightType]            = None
-    weight:                 Optional[WeightType]            = None
-    goal_weight:            Optional[WeightType]            = None
-    preferred_theme:        Optional[ThemeEnum]             = None
-    preferred_weight_unit:  Optional[WeightUnitEnum]        = None
-    preferred_height_unit:  Optional[HeightUnitEnum]        = None
-    subscription_plan:      Optional[SubscriptionPlanEnum]  = None
+    model_config = {"from_attributes": True, "extra": "forbid"}
 
 
 class UserProfileResponse(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    # bmi, bmr, age are computed server-side (DB trigger / computed column) — read-only
+    id:                    int
+    username:              str
+    birth_date:            date
+    gender:                GenderEnum
+    height:                Decimal
+    weight:                Decimal
+    goal_weight:           Decimal
+    preferred_theme:       ThemeEnum
+    preferred_weight_unit: WeightUnitEnum
+    preferred_height_unit: HeightUnitEnum
+    subscription_plan:     SubscriptionPlanEnum
+    bmi:                   Decimal
+    bmr:                   Decimal
+    age:                   int
+    created_at:            datetime
+    modified_at:           datetime
 
-    id:                     int
-    username:               str
-    birth_date:             date
-    gender:                 GenderEnum
-    height:                 Decimal
-    weight:                 Decimal
-    goal_weight:            Decimal
-    preferred_theme:        ThemeEnum
-    preferred_weight_unit:  WeightUnitEnum
-    preferred_height_unit:  HeightUnitEnum
-    subscription_plan:      SubscriptionPlanEnum
-    bmi:                    Decimal
-    bmr:                    Decimal
-    age:                    int
-    created_at:             datetime
-    modified_at:            datetime
+    model_config = {"from_attributes": True}
