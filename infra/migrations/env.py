@@ -42,6 +42,13 @@ target_metadata = Base.metadata
 # ... etc.
 config.set_main_option("sqlalchemy.url", os.environ["DATABASE_URL"])
 
+def include_object(object, name, type_, reflected, compare_to):
+    if type_ == "table" and object.schema == "auth":
+        return False
+    if type_ == "foreign_key_constraint" and name == "users_auth_id_fkey":
+        return False
+    return True
+
 
 def run_migrations_offline() -> None:
     """Run migrations in 'offline' mode.
@@ -59,6 +66,7 @@ def run_migrations_offline() -> None:
     context.configure(
         url=url,
         target_metadata=target_metadata,
+        include_object=include_object,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
     )
@@ -68,12 +76,6 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
-    """Run migrations in 'online' mode.
-
-    In this scenario we need to create an Engine
-    and associate a connection with the context.
-
-    """
     connectable = engine_from_config(
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",
@@ -82,7 +84,9 @@ def run_migrations_online() -> None:
 
     with connectable.connect() as connection:
         context.configure(
-            connection=connection, target_metadata=target_metadata
+            connection=connection,
+            target_metadata=target_metadata,
+            include_object=include_object,  # add this
         )
 
         with context.begin_transaction():
