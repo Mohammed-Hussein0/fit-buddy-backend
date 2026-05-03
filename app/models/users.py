@@ -52,6 +52,7 @@ class Users(Base):
     
     auth_id: Mapped[uuid.UUID] = mapped_column(Uuid, unique=True, nullable=False)
 
-    plans: Mapped[list["WorkoutPlan"]] = relationship("WorkoutPlan", back_populates="owner")
-    sessions: Mapped[list["WorkoutSession"]] = relationship("WorkoutSession", back_populates="user")
-    weight_logs: Mapped[list["WeightLog"]] = relationship("WeightLog", back_populates="user")
+    plans:        Mapped[list["WorkoutPlan"]] = relationship("WorkoutPlan", back_populates="owner")
+    workout_sets: Mapped[list["WorkoutSet"]]  = relationship("WorkoutSet",  back_populates="user")
+    weight_logs:  Mapped[list["WeightLog"]]   = relationship("WeightLog",   back_populates="user")
+    workout_notes: Mapped[list["WorkoutNote"]] = relationship("WorkoutNote", back_populates="user")

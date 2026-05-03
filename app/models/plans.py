@@ -8,6 +8,8 @@ from sqlalchemy.sql import func
 from app.db.connection import Base
 from .enums import *
 
+# ── Workout Plans ─────────────────────────────────────────
+
 class WorkoutPlan(Base):
     __tablename__ = "workout_plans"
 
@@ -27,3 +29,27 @@ class WorkoutPlan(Base):
                              cascade="all, delete-orphan",
                              order_by="WorkoutPlanExercise.day_order, WorkoutPlanExercise.position")
     sessions  = relationship("WorkoutSession",      back_populates="plan")
+
+# ── Workout PLan Exercises ──────────────────────────────────
+
+class WorkoutPlanExercise(Base):
+    __tablename__ = "workout_plan_exercises"
+
+    id              = Column(Integer, primary_key=True, autoincrement=True)
+    plan_id         = Column(Integer, ForeignKey("workout_plans.id", ondelete="CASCADE"),  nullable=False)
+    exercise_id     = Column(Integer, ForeignKey("exercises.id",     ondelete="RESTRICT"), nullable=False)
+    day_order       = Column(SmallInteger, nullable=False)
+    day_label       = Column(String(80),   nullable=True)
+    position        = Column(SmallInteger, nullable=False)
+    prescribed_sets = Column(SmallInteger, nullable=True)
+    prescribed_reps = Column(String(20),   nullable=True)
+    prescribed_rpe  = Column(Numeric(3, 1), nullable=True)
+    rest_seconds    = Column(SmallInteger,  nullable=True)
+    notes           = Column(Text, nullable=True)
+
+    __table_args__ = (
+        UniqueConstraint("plan_id", "day_order", "position", name="uq_plan_day_position"),
+    )
+
+    plan     = relationship("WorkoutPlan", back_populates="exercises")
+    exercise = relationship("Exercise",    back_populates="plan_exercises")
