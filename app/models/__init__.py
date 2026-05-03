@@ -1,5 +1,5 @@
 from .users import Users
 from .exercises import Exercise
-from .plans import WorkoutPlan
+from .plans import WorkoutPlan, WorkoutPlanExercise
 from .weights import WeightLog
-from .workouts import WorkoutPlanExercise, WorkoutNote, WorkoutSet
+from .workouts import WorkoutNote, WorkoutSet
