@@ -25,3 +25,4 @@ class Exercise(Base):
 
     plan_exercises = relationship("WorkoutPlanExercise", back_populates="exercise")
     workout_sets   = relationship("WorkoutSet",          back_populates="exercise")
+    

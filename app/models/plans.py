@@ -28,7 +28,7 @@ class WorkoutPlan(Base):
     exercises = relationship("WorkoutPlanExercise", back_populates="plan",
                              cascade="all, delete-orphan",
                              order_by="WorkoutPlanExercise.day_order, WorkoutPlanExercise.position")
-    sessions  = relationship("WorkoutSession",      back_populates="plan")
+    exercises = relationship("WorkoutPlanExercise", back_populates="plan", cascade="all, delete-orphan")
 
 # ── Workout PLan Exercises ──────────────────────────────────
 
