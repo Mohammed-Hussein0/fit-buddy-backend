@@ -5,6 +5,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import DeclarativeBase, relationship, Mapped, mapped_column
 from sqlalchemy.sql import func
+from sqlalchemy.dialects.postgresql import INT4RANGE
 from app.db.connection import Base
 from datetime import datetime
 from .enums import *
@@ -42,7 +43,7 @@ class WorkoutPlanExercise(Base):
     day_label       = Column(String(80),   nullable=True)
     position        = Column(SmallInteger, nullable=False)
     prescribed_sets = Column(SmallInteger, nullable=True)
-    prescribed_reps = Column(String(20),   nullable=True)
+    prescribed_reps = Column(INT4RANGE,   nullable=True)
     prescribed_rpe  = Column(Numeric(3, 1), nullable=True)
     rest_seconds    = Column(SmallInteger,  nullable=True)
     notes           = Column(Text, nullable=True)
