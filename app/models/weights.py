@@ -1,11 +1,12 @@
 import enum
 from sqlalchemy import (
     BigInteger, Boolean, Column, Date, DateTime, Enum,
-    ForeignKey, Integer, Numeric, SmallInteger, String, Text, UniqueConstraint
+    ForeignKey, Integer, Numeric, SmallInteger, String, Text, UniqueConstraint,
 )
-from sqlalchemy.orm import DeclarativeBase, relationship
+from sqlalchemy.orm import DeclarativeBase, relationship, Mapped, mapped_column
 from sqlalchemy.sql import func
 from app.db.connection import Base
+import datetime
 
 class WeightLog(Base):
     __tablename__ = "weight_logs"
@@ -18,7 +19,7 @@ class WeightLog(Base):
     water_pct      = Column(Numeric(4, 1), nullable=True)
     visceral_fat   = Column(SmallInteger,  nullable=True)
     notes          = Column(Text,          nullable=True)
-    logged_at      = Column(DateTime(timezone=True), nullable=False, default=func.now())
-    created_at     = Column(DateTime(timezone=True), server_default=func.now())
+    created_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    modified_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), nullable=False)
 
     user = relationship("Users", back_populates="weight_logs")

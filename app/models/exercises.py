@@ -3,7 +3,7 @@ from sqlalchemy import (
     BigInteger, Boolean, Column, Date, DateTime, Enum,
     ForeignKey, Integer, Numeric, SmallInteger, String, Text, UniqueConstraint
 )
-from sqlalchemy.orm import DeclarativeBase, relationship
+from sqlalchemy.orm import DeclarativeBase, relationship, Mapped, mapped_column
 from sqlalchemy.sql import func
 from app.db.connection import Base
 from .enums import *

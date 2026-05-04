@@ -1,13 +1,14 @@
 from typing import Optional
-import datetime
 import decimal
 from .enums import *
 import uuid
-from sqlalchemy import BigInteger, Boolean, CheckConstraint, Column, Computed, Date, DateTime, Double, Enum, ForeignKeyConstraint, Identity, Index, Numeric, PrimaryKeyConstraint, SmallInteger, String, Table, Text, UniqueConstraint, Uuid, text
+from sqlalchemy import (BigInteger, Boolean, CheckConstraint, Column, Computed, Date, DateTime, 
+                        Double, Enum, ForeignKeyConstraint, Identity, Index, Numeric, PrimaryKeyConstraint, 
+                        SmallInteger, String, Table, Text, UniqueConstraint, Uuid, text)
 from sqlalchemy.dialects.postgresql import JSONB, OID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from app.db.connection import Base
-
+import datetime
 
 class Users(Base):
     __tablename__ = 'users'
@@ -56,3 +57,4 @@ class Users(Base):
     workout_sets: Mapped[list["WorkoutSet"]]  = relationship("WorkoutSet",  back_populates="user")
     weight_logs:  Mapped[list["WeightLog"]]   = relationship("WeightLog",   back_populates="user")
     workout_notes: Mapped[list["WorkoutNote"]] = relationship("WorkoutNote", back_populates="user")
+    steps_logs: Mapped[list["Steps"]] = relationship("Steps", back_populates="user", cascade="all, delete-orphan")

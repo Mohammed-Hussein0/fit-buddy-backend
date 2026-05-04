@@ -3,9 +3,10 @@ from sqlalchemy import (
     BigInteger, Boolean, Column, Date, DateTime, Enum,
     ForeignKey, Integer, Numeric, SmallInteger, String, Text, UniqueConstraint
 )
-from sqlalchemy.orm import DeclarativeBase, relationship
+from sqlalchemy.orm import DeclarativeBase, relationship, Mapped, mapped_column
 from sqlalchemy.sql import func
 from app.db.connection import Base
+from datetime import datetime
 from .enums import *
 
 # ── Workout Plans ─────────────────────────────────────────
@@ -21,14 +22,13 @@ class WorkoutPlan(Base):
     duration_weeks = Column(SmallInteger,   nullable=True)
     days_per_week  = Column(SmallInteger,   nullable=True)
     is_active      = Column(Boolean, nullable=False, default=True)
-    created_at     = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at     = Column(DateTime(timezone=True), nullable=True)  # maintained by trigger
+    created_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
+    modified_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), nullable=False)  # maintained by trigger
 
     owner     = relationship("Users",                back_populates="plans")
     exercises = relationship("WorkoutPlanExercise", back_populates="plan",
                              cascade="all, delete-orphan",
                              order_by="WorkoutPlanExercise.day_order, WorkoutPlanExercise.position")
-    exercises = relationship("WorkoutPlanExercise", back_populates="plan", cascade="all, delete-orphan")
 
 # ── Workout PLan Exercises ──────────────────────────────────
 
